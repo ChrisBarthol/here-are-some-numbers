@@ -1,36 +1,46 @@
 module Main exposing (..)
 
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, button, h1)
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (..)
 import Html.App
+import Random exposing (..)
 
 --MODEL
 
 type alias Model =
-  String
+  { dieFace : Int
+  }
 
-init : ( Model, Cmd Msg )
+init : (Model, Cmd Msg)
 init =
-  ( "Hello", Cmd.none )
+  (Model 1, Cmd.none)
 
 --MESSAGES
 
 type Msg
-  = NoOp
+  = Roll
+  | NewFace Int
 
 --VIEW
 
 view : Model -> Html Msg
 view model =
   div []
-      [ text model ]
+    [ h1 [] [ text (toString model.dieFace) ]
+    , button [ onClick Roll ] [ text "Roll" ]
+    ]
 
 --UPDATE
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    NoOp ->
-      ( model, Cmd.none )
+    Roll ->
+      (model, Random.generate NewFace (Random.int 1 6))
+
+    NewFace newFace ->
+      (Model newFace, Cmd.none)
 
 --SUBSCRIPTIONS
 
